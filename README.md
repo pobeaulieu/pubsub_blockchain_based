@@ -25,7 +25,7 @@ truffle test --network ganache --reset
 ```
 
 ## Web3 Clients
-- In `.env` file, update `CONTRACT_ADDRESS` with contract address received from deployment and `CLIENT_PRIVATE_KEY` (Can be found in Ganache UI the same way as documented in Deployment step)
+- In `.env` file, provide `CLIENT_PRIVATE_KEY` (Can be found in Ganache UI the same way as documented in Deployment step). 
 - Run Web3 client 
 ```
 node studentNumberClient.js
