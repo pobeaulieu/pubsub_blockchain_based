@@ -45,10 +45,9 @@
 // const { MNEMONIC, PROJECT_ID } = process.env;
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
+
 require('dotenv').config(); // Load environment variables from .env file
-const ganachePrivateKeys = [process.env.GANACHE_DEPLOYMENT_SENDER_PRIVATE_KEY]
-console.log("Test")
-console.log(process.env.GANACHE_DEPLOYMENT_SENDER_PRIVATE_KEY)
+console.log(process.env.NETWORK_ID)
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -62,10 +61,10 @@ module.exports = {
 
   networks: {
     ganache: {
-      provider: () => new HDWalletProvider([process.env.GANACHE_DEPLOYMENT_SENDER_PRIVATE_KEY], "http://127.0.0.1:7545"),
-      host: "127.0.0.1", 
-      port: 7545, 
-      network_id: 5777,   
+      provider: () => new HDWalletProvider([process.env.DEPLOYMENT_SENDER_PRIVATE_KEY], process.env.NETWORK_URL),
+      host: process.env.HOST, 
+      port: process.env.PORT, 
+      network_id: process.env.NETWORK_ID,   
     }
   },
 
