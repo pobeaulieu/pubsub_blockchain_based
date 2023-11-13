@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.1.15",
+    "@types/node": "^20.9.0",
+    "dotenv": "^16.3.1",
+    "truffle": "^5.11.5",
+    "truffle-contract": "^4.0.31",
+    "web3": "^4.2.2"
+  },
+  "name": "pubsub_blockchain_based",
+  "description": "## System Architecture ![alt text](image.png)",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "mocha": "^10.1.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pobeaulieu/pubsub_blockchain_based.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pobeaulieu/pubsub_blockchain_based/issues"
+  },
+  "homepage": "https://github.com/pobeaulieu/pubsub_blockchain_based#readme"
+}
