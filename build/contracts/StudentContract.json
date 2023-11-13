@@ -106,7 +106,7 @@
   "sourceMap": "26:995:0:-;;;311:103;8:9:-1;5:2;;;30:1;27;20:12;5:2;311:103:0;352:10;342:7;;:20;;;;;;;;;;;;;;;;;;406:1;372:22;:31;395:7;;;;;;;;;;;372:31;;;;;;;;;;;;;;;:35;;;;26:995;;;;;;",
   "deployedSourceMap": "26:995:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;57:25;;8:9:-1;5:2;;;30:1;27;20:12;5:2;57:25:0;;;:::i;:::-;;;;;;;;;;;;;;;;;;;88:22;;8:9:-1;5:2;;;30:1;27;20:12;5:2;88:22:0;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;116:54;;8:9:-1;5:2;;;30:1;27;20:12;5:2;116:54:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;116:54:0;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;909:110;;8:9:-1;5:2;;;30:1;27;20:12;5:2;909:110:0;;;:::i;:::-;;;;;;;;;;;;;;;;;;;606:297;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;606:297:0;;;;;;;;;;;;;;;;;:::i;:::-;;57:25;;;;:::o;88:22::-;;;;;;;;;;;;;:::o;116:54::-;;;;;;;;;;;;;;;;;:::o;909:110::-;958:4;981:22;:31;1004:7;;;;;;;;;;;981:31;;;;;;;;;;;;;;;;974:38;;909:110;:::o;606:297::-;529:16;516:9;:29;508:74;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;764:14;748:13;:30;;;;822:14;788:22;:31;811:7;;;;;;;;;;;788:31;;;;;;;;;;;;;;;:48;;;;851:45;872:14;888:7;;;;;;;;;;;851:45;;;;;;;;;;;;;;;;;;;;;;;;;;;;606:297;:::o",
   "source": "pragma solidity >=0.5.1;\n\ncontract StudentContract {\n    uint public studentNumber;\n    address public student;\n    mapping(address => uint) public studentToStudentNumber;\n\n    // Event emitted when a student number is updated\n    event StudentNumberUpdated(uint newStudentNumber, address studentAddress);\n\n    constructor() public {\n        student = msg.sender;\n        studentToStudentNumber[student] = 0;\n    }\n\n    // Modifier to require a specific amount of Wei\n    modifier requirePayment() {\n        require(msg.value == 5400000000000000, \"Sent amount must be 0.0054 ether\");\n        _;\n    }\n\n    function setStudentNumber(uint _studentNumber) public payable requirePayment {\n        // Update the student number and emit an event\n        studentNumber = _studentNumber;\n        studentToStudentNumber[student] = _studentNumber;\n        emit StudentNumberUpdated(_studentNumber, student);\n    }\n\n    function getStudentNumber() public view returns (uint) {\n        return studentToStudentNumber[student];\n    }\n}\n",
-  "sourcePath": "/Users/pobeaulieu/Desktop/pubsub_blockchain_based/studentNumberContract/contracts/StudentContract.sol",
+  "sourcePath": "/Users/pobeaulieu/Desktop/pubsub_blockchain_based/contracts/StudentContract.sol",
   "ast": {
     "absolutePath": "project:/contracts/StudentContract.sol",
     "exportedSymbols": {
@@ -2053,12 +2053,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xCD4972DB9a461687186523644BcEE2a4D91CD4b2",
-      "transactionHash": "0x4d98d070e4a056d3d70292f78c4fc3c77a4043a0eca1dec0437f3a962034e2d4"
+      "address": "0x0a0dCB42a0964590bF8328Bc0d5176aFdCB3f144",
+      "transactionHash": "0xa652442612d06f5bac0b5a4095edbfba68604e2396dfb50fb9f0aababbe9aa18"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2023-11-13T20:27:34.488Z",
+  "updatedAt": "2023-11-13T21:01:22.769Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
