@@ -28,7 +28,7 @@ truffle test --network ganache --reset
 - In `.env` file, provide `CLIENT_PRIVATE_KEY` (Can be found in Ganache UI the same way as documented in Deployment step). 
 - Run Web3 client 
 ```
-node studentNumberClient.js
+node client.js
 ``` 
 
 ## System Architecture

@@ -58,6 +58,15 @@ contract PubSubContract {
         }
     }
 
+    function unadvertise(string memory topicName) public payable requirePayment {
+        for (uint i = 0; i < topics[topicName].publishers.length; i++) {
+            if (topics[topicName].publishers[i] == msg.sender) {
+                delete topics[topicName].publishers[i];
+                break;
+            }
+        }
+    }
+
     function unsubscribe(string memory topicName) public {
         require(bytes(topics[topicName].name).length > 0, "Topic does not exist");
         require(contains(topics[topicName].subscribers, msg.sender), "Not subscribed to this topic");
@@ -98,14 +107,18 @@ function printAllTopics() public view returns (string memory) {
         result = string(abi.encodePacked(result, "Publishers: "));
 
         for (uint j = 0; j < topics[topicNames[i]].publishers.length; j++) {
-            result = string(abi.encodePacked(result, toAsciiString(topics[topicNames[i]].publishers[j]), " "));
+             if (topics[topicNames[i]].publishers[i] != address(0)) {
+                result = string(abi.encodePacked(result, toAsciiString(topics[topicNames[i]].publishers[j]), " "));
+             }
         }
         result = string(abi.encodePacked(result, "\n"));
 
         // Print subscribers
         result = string(abi.encodePacked(result, "Subscribers: "));
         for (uint k = 0; k < topics[topicNames[i]].subscribers.length; k++) {
-            result = string(abi.encodePacked(result, toAsciiString(topics[topicNames[i]].subscribers[k]), " "));
+             if (topics[topicNames[i]].publishers[i] != address(0)) {
+                result = string(abi.encodePacked(result, toAsciiString(topics[topicNames[i]].subscribers[k]), " "));
+             }
         }
         result = string(abi.encodePacked(result, "\n\n"));
     }

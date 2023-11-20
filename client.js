@@ -12,7 +12,7 @@ async function runClient() {
   console.log("-----------------------------------------------------------------------") 
   console.log(`${allTopics}`);
   console.log("-----------------------------------------------------------------------")
-  rl.question('############# MENU ############### \n 1: advertise \n 2: publish \n 3: subscribe \n 4: listen \n Enter choice: ', async (choice) => {
+  rl.question('############# MENU ############### \n 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n 6: List to network \n Enter choice: ', async (choice) => {
     try {
       if (choice === '1') {
         // Advertise a topic
@@ -23,6 +23,14 @@ async function runClient() {
         });
       } else if (choice === '2') {
         // Publish a message
+        rl.question('Enter the topic to unadvertise to: ', async (topicName) => {
+          const publishTransaction = contract.methods.unadvertise(topicName);
+          await executeTransaction(publishTransaction, txCost);
+          runClient();
+  
+        });
+      } else if (choice === '3') {
+        // Publish a message
         rl.question('Enter the topic to publish to: ', async (topicName) => {
           rl.question('Enter the message to publish: ', async (publishedMessage) => {
             const publishTransaction = contract.methods.publish(topicName, publishedMessage);
@@ -31,7 +39,7 @@ async function runClient() {
           });
         });
       } else {
-        console.log('Invalid choice. Please enter 1 or 2.');
+        console.log('Invalid choice.');
         runClient();
       }
     } catch (error) {
