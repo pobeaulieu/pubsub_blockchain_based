@@ -15,11 +15,6 @@ contract PubSubContract {
 
     event MessageReceived(string topic, string message, address subscriber);
 
-    // Modifier to require a specific amount of Wei
-    modifier requirePayment() {
-        require(msg.value == 5400000000000000, "Sent amount must be 0.0054 ether");
-        _;
-    }
 
     modifier requireDeposit() {
         require(msg.value > 0 ether, "Deposit must be positive");
@@ -177,5 +172,4 @@ contract PubSubContract {
         if (uint8(b) < 10) return bytes1(uint8(b) + 0x30);
         else return bytes1(uint8(b) + 0x57);
     }
-
 }
