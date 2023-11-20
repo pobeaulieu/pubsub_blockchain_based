@@ -79,10 +79,30 @@ contract PubSubContract {
             }
         }
     }
+
+    // Helper function to remove a subscriber from the array
+    function removePublisher(string memory topicName, address publisher) internal {
+        for (uint i = 0; i < topics[topicName].publishers.length; i++) {
+            if (topics[topicName].publishers[i] == publisher) {
+                // Remove subscriber from the array
+                delete topics[topicName].publishers[i];
+
+                // Shift the remaining elements to fill the gap
+                for (uint j = i; j < topics[topicName].publishers.length - 1; j++) {
+                    topics[topicName].publishers[j] = topics[topicName].publishers[j + 1];
+                }
+
+                // Decrease the length of the array
+                topics[topicName].publishers.pop();
+
+                break;
+            }
+        }
+    }
     function unadvertise(string memory topicName) public {
         for (uint i = 0; i < topics[topicName].publishers.length; i++) {
             if (topics[topicName].publishers[i] == msg.sender) {
-                removeSubscriber(topicName, msg.sender);
+                removePublisher(topicName, msg.sender);
                 break;
             }
         }
