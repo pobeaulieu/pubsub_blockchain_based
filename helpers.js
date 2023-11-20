@@ -5,7 +5,13 @@ const fs = require('fs');
 
 require('dotenv').config();
 
-const privateKey = process.env.CLIENT_PRIVATE_KEY;
+const privateKey = process.argv.slice(2)[0]
+
+if (!privateKey) {
+    console.error('Error: Private key not provided.');
+    process.exit(1);
+}
+
 const localNodeUrl = process.env.NETWORK_URL;
 const web3 = new Web3(localNodeUrl);
 
