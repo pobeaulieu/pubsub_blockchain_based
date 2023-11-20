@@ -23,10 +23,10 @@ contract PubSubContract {
     }
 
     function advertise(string memory topicName) public payable requirePayment {
-        if (bytes(topics[topicName].name).length == 0) {
+        if (!topicExists(topicName)) {
             topics[topicName].name = topicName;
             topicNames.push(topicName);
-        }
+        } 
 
         if (!contains(topics[topicName].publishers, msg.sender)) {
             topics[topicName].publishers.push(msg.sender);
@@ -95,6 +95,14 @@ contract PubSubContract {
         return false;
     }
 
+    function topicExists(string memory topicName) internal view returns (bool) {
+        for (uint i = 0; i < topicNames.length; i++) {
+            if (keccak256(abi.encodePacked(topics[topicNames[i]].name)) == keccak256(abi.encodePacked(topicName))) {
+                return true;
+            }
+        }
+        return false;
+}
 
 // Add this function to your contract
 function printAllTopics() public view returns (string memory) {
@@ -107,7 +115,7 @@ function printAllTopics() public view returns (string memory) {
         result = string(abi.encodePacked(result, "Publishers: "));
 
         for (uint j = 0; j < topics[topicNames[i]].publishers.length; j++) {
-             if (topics[topicNames[i]].publishers[i] != address(0)) {
+             if (topics[topicNames[i]].publishers[j] != address(0)) {
                 result = string(abi.encodePacked(result, toAsciiString(topics[topicNames[i]].publishers[j]), " "));
              }
         }
@@ -116,7 +124,7 @@ function printAllTopics() public view returns (string memory) {
         // Print subscribers
         result = string(abi.encodePacked(result, "Subscribers: "));
         for (uint k = 0; k < topics[topicNames[i]].subscribers.length; k++) {
-             if (topics[topicNames[i]].publishers[i] != address(0)) {
+             if (topics[topicNames[i]].subscribers[k] != address(0)) {
                 result = string(abi.encodePacked(result, toAsciiString(topics[topicNames[i]].subscribers[k]), " "));
              }
         }

@@ -9,10 +9,10 @@ const rl = readline.createInterface({
 
 async function runClient() {
   const allTopics = await contract.methods.printAllTopics().call();
-  console.log("-----------------------------------------------------------------------") 
+  console.log("--------------------------PUBSUB STATE--------------------------------") 
   console.log(`${allTopics}`);
-  console.log("-----------------------------------------------------------------------")
-  rl.question('############# MENU ############### \n 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n 6: List to network \n Enter choice: ', async (choice) => {
+  console.log("------------------------------MENU------------------------------------")
+  rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n 6: List to network \n Enter choice: ', async (choice) => {
     try {
       if (choice === '1') {
         // Advertise a topic
