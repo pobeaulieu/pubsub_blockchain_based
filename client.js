@@ -2,6 +2,8 @@ const { executeTransaction, contract } = require('./helpers');
 const readline = require('readline');
 const txCost = '0.0054';
 
+console.log('Arguments:', process.argv.slice(2)[0]);
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -12,7 +14,7 @@ async function runClient() {
   console.log("--------------------------PUBSUB STATE--------------------------------") 
   console.log(`${allTopics}`);
   console.log("------------------------------MENU------------------------------------")
-  rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n 6: List to network \n Enter choice: ', async (choice) => {
+  rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n 6: Listen to network \n Enter choice: ', async (choice) => {
     try {
       if (choice === '1') {
         // Advertise a topic
@@ -27,7 +29,6 @@ async function runClient() {
           const publishTransaction = contract.methods.unadvertise(topicName);
           await executeTransaction(publishTransaction, txCost);
           runClient();
-  
         });
       } else if (choice === '3') {
         // Publish a message
