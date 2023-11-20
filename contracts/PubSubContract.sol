@@ -13,7 +13,6 @@ contract PubSubContract {
     mapping(string => Topic) public topics;
     string[] public topicNames;
 
-
     event MessageReceived(string topic, string message, address subscriber);
 
     // Modifier to require a specific amount of Wei
@@ -22,7 +21,12 @@ contract PubSubContract {
         _;
     }
 
-    function advertise(string memory topicName) public payable requirePayment {
+    modifier requireDeposit() {
+        require(msg.value == 0.5 ether, "Deposit must be 0.5 ether");
+        _;
+    }
+
+    function advertise(string memory topicName) public {
         if (!topicExists(topicName)) {
             topics[topicName].name = topicName;
             topicNames.push(topicName);
@@ -34,15 +38,13 @@ contract PubSubContract {
     }
 
 
-    function subscribe(string memory topicName) public payable requirePayment{
-        require(msg.value == 0.5 ether, "Deposit must be 0.5 ether");
-        require(bytes(topics[topicName].name).length > 0, "Topic does not exist");
-
+    function subscribe(string memory topicName) public payable requireDeposit{
+        require(topicExists(topicName), "Topic does not exist");
         topics[topicName].subscribers.push(msg.sender);
         topics[topicName].subscriberToBalance[msg.sender] += msg.value;
     }
 
-    function publish(string memory topicName, string memory message) public payable requirePayment {
+    function publish(string memory topicName, string memory message) public {
         require(contains(topics[topicName].publishers, msg.sender), "Not authorized to publish");
         topics[topicName].messages.push(message);
 
@@ -53,11 +55,11 @@ contract PubSubContract {
                 topics[topicName].subscriberToMessage[subscriber].push(message);
 
                 emit MessageReceived(topicName, message, subscriber);
-            }
+            } 
         }
     }
 
-    function unadvertise(string memory topicName) public payable requirePayment {
+    function unadvertise(string memory topicName) public {
         for (uint i = 0; i < topics[topicName].publishers.length; i++) {
             if (topics[topicName].publishers[i] == msg.sender) {
                 delete topics[topicName].publishers[i];
@@ -67,13 +69,14 @@ contract PubSubContract {
     }
 
     function unsubscribe(string memory topicName) public {
-        require(bytes(topics[topicName].name).length > 0, "Topic does not exist");
+        require(topicExists(topicName), "Topic does not exist");
         require(contains(topics[topicName].subscribers, msg.sender), "Not subscribed to this topic");
 
-        // uint remainingBalance = topics[topicName].subscriberToBalance[msg.sender];
-        // if (remainingBalance > 0) {
-        //     payable(msg.sender).transfer(remainingBalance);
-        // }
+        // Give back balance to subscriber
+        uint remainingBalance = topics[topicName].subscriberToBalance[msg.sender];
+        if (remainingBalance > 0) {
+            payable(msg.sender).transfer(remainingBalance);
+        }
 
         // Remove subscriber from the list
         for (uint i = 0; i < topics[topicName].subscribers.length; i++) {

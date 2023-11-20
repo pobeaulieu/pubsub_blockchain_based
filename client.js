@@ -1,6 +1,7 @@
 const { executeTransaction, contract } = require('./helpers');
 const readline = require('readline');
 const txCost = '0.0054';
+const txDeposit = '0.5';
 
 console.log('Arguments:', process.argv.slice(2)[0]);
 
@@ -20,14 +21,14 @@ async function runClient() {
         // Advertise a topic
         rl.question('Enter the topic to advertise: ', async (topicName) => {
           const advertiseTransaction = contract.methods.advertise(topicName);
-          await executeTransaction(advertiseTransaction, txCost);
+          await executeTransaction(advertiseTransaction, 0);
           runClient();
         });
       } else if (choice === '2') {
         // Publish a message
         rl.question('Enter the topic to unadvertise to: ', async (topicName) => {
           const publishTransaction = contract.methods.unadvertise(topicName);
-          await executeTransaction(publishTransaction, txCost);
+          await executeTransaction(publishTransaction, 0);
           runClient();
         });
       } else if (choice === '3') {
@@ -35,10 +36,29 @@ async function runClient() {
         rl.question('Enter the topic to publish to: ', async (topicName) => {
           rl.question('Enter the message to publish: ', async (publishedMessage) => {
             const publishTransaction = contract.methods.publish(topicName, publishedMessage);
-            await executeTransaction(publishTransaction, txCost);
+            await executeTransaction(publishTransaction, 0);
             runClient();
           });
         });
+        
+      } else if (choice === '4') {
+        // Publish a message
+        rl.question('Enter the topic to subscribe to: ', async (topicName) => {
+          const subscribeTx = contract.methods.subscribe(topicName);
+          await executeTransaction(subscribeTx, txDeposit);
+          runClient();
+ 
+        });
+        
+      }else if (choice === '5') {
+        // Publish a message
+        rl.question('Enter the topic to unsubscribe to: ', async (topicName) => {
+          const unsubscribeTx = contract.methods.unsubscribe(topicName);
+          await executeTransaction(unsubscribeTx, 0);
+          runClient();
+ 
+        });
+        
       } else {
         console.log('Invalid choice.');
         runClient();
