@@ -22,7 +22,7 @@ contract PubSubContract {
     }
 
     modifier requireDeposit() {
-        require(msg.value == 0.5 ether, "Deposit must be 0.5 ether");
+        require(msg.value > 0 ether, "Deposit must be positive");
         _;
     }
 
@@ -56,13 +56,38 @@ contract PubSubContract {
 
                 emit MessageReceived(topicName, message, subscriber);
             } 
+
+            // Check if the balance is now zero and remove the subscriber
+            if (topics[topicName].subscriberToBalance[subscriber] == 0) {
+                // Remove subscriber from the array
+                removeSubscriber(topicName, subscriber);
+            }
         }
     }
 
+    // Helper function to remove a subscriber from the array
+    function removeSubscriber(string memory topicName, address subscriber) internal {
+        for (uint i = 0; i < topics[topicName].subscribers.length; i++) {
+            if (topics[topicName].subscribers[i] == subscriber) {
+                // Remove subscriber from the array
+                delete topics[topicName].subscribers[i];
+
+                // Shift the remaining elements to fill the gap
+                for (uint j = i; j < topics[topicName].subscribers.length - 1; j++) {
+                    topics[topicName].subscribers[j] = topics[topicName].subscribers[j + 1];
+                }
+
+                // Decrease the length of the array
+                topics[topicName].subscribers.pop();
+
+                break;
+            }
+        }
+    }
     function unadvertise(string memory topicName) public {
         for (uint i = 0; i < topics[topicName].publishers.length; i++) {
             if (topics[topicName].publishers[i] == msg.sender) {
-                delete topics[topicName].publishers[i];
+                removeSubscriber(topicName, msg.sender);
                 break;
             }
         }

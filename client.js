@@ -1,7 +1,5 @@
 const { executeTransaction, contract } = require('./helpers');
 const readline = require('readline');
-const txCost = '0.0054';
-const txDeposit = '0.5';
 
 console.log('Arguments:', process.argv.slice(2)[0]);
 
@@ -44,10 +42,11 @@ async function runClient() {
       } else if (choice === '4') {
         // Publish a message
         rl.question('Enter the topic to subscribe to: ', async (topicName) => {
+          rl.question('Enter deposit: ', async (deposit) => {
           const subscribeTx = contract.methods.subscribe(topicName);
-          await executeTransaction(subscribeTx, txDeposit);
+          await executeTransaction(subscribeTx, deposit);
           runClient();
- 
+        });
         });
         
       }else if (choice === '5') {
