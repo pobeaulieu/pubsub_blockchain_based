@@ -6,12 +6,6 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-async function displayTopics() {
-  const allTopics = await contract.methods.printAllTopics().call();
-  console.log("--------------------------PUBSUB STATE--------------------------------");
-  console.log(`${allTopics}`);
-}
-
 async function advertiseTopic() {
   rl.question('Enter the topic to advertise: ', async (topicName) => {
     const advertiseTransaction = contract.methods.advertise(topicName);
@@ -56,35 +50,33 @@ async function unsubscribeFromTopic() {
   });
 }
 
-async function handleUserChoice(choice) {
-  switch (choice) {
-    case '1':
-      await advertiseTopic();
-      break;
-    case '2':
-      await unadvertiseTopic();
-      break;
-    case '3':
-      await publishMessage();
-      break;
-    case '4':
-      await subscribeToTopic();
-      break;
-    case '5':
-      await unsubscribeFromTopic();
-      break;
-    default:
-      console.log('Invalid choice.');
-  }
-}
-
 async function runClient() {
-  await displayTopics();
+  const allTopics = await contract.methods.printAllTopics().call();
+  console.log("--------------------------PUBSUB STATE--------------------------------");
+  console.log(`${allTopics}`);
 
   console.log("------------------------------MENU------------------------------------");
   rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n 6: Listen to network \n Enter choice: ', async (choice) => {
     try {
-      await handleUserChoice(choice);
+      switch (choice) {
+        case '1':
+          await advertiseTopic();
+          break;
+        case '2':
+          await unadvertiseTopic();
+          break;
+        case '3':
+          await publishMessage();
+          break;
+        case '4':
+          await subscribeToTopic();
+          break;
+        case '5':
+          await unsubscribeFromTopic();
+          break;
+        default:
+          console.log('Invalid choice.');
+      }
     } catch (error) {
       console.error('Error:', error);
       // Restart the process by calling the function recursively
