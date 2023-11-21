@@ -22,19 +22,21 @@ contract PubSubContract {
     }
 
     function advertise(string memory topicName) public {
+        require(!contains(topics[topicName].publishers, msg.sender), "Already advertised this topic");
+
         if (!topicExists(topicName)) {
             topics[topicName].name = topicName;
             topicNames.push(topicName);
         } 
 
-        if (!contains(topics[topicName].publishers, msg.sender)) {
-            topics[topicName].publishers.push(msg.sender);
-        }
+        topics[topicName].publishers.push(msg.sender);
     }
 
 
     function subscribe(string memory topicName) public payable requireDeposit{
         require(topicExists(topicName), "Topic does not exist");
+        require(!contains(topics[topicName].subscribers, msg.sender), "Already subscribed to this topic");
+
         topics[topicName].subscribers.push(msg.sender);
         topics[topicName].subscriberToBalance[msg.sender] += msg.value;
     }

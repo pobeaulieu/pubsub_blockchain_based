@@ -1,29 +1,43 @@
-const {Web3} = require('web3');
+const { Web3 } = require('web3');
 const fs = require('fs');
 require('dotenv').config(); // Load environment variables from .env file
 
-const privateKey = process.argv.slice(2)[0]
+const privateKey = process.argv.slice(2)[0];
 
 if (!privateKey) {
-    console.error('Error: Private key not provided.');
-    process.exit(1);
+  console.error('Error: Private key not provided.');
+  process.exit(1);
 }
 
-const localNodeUrl = process.env.NETWORK_URL;
-const web3 = new Web3(localNodeUrl);
+const websocketUrl = process.env.WEBSOCKET_URL;
+const web3 = new Web3(websocketUrl);
 
 const contractJson = JSON.parse(fs.readFileSync('build/contracts/StudentContract.json', 'utf8'));
 const contractAbi = contractJson.abi;
 const contractAddress = contractJson.networks[process.env.NETWORK_ID].address;
 const contract = new web3.eth.Contract(contractAbi, contractAddress);
 
-console.log(contractAddress)
+console.log(contractAddress);
+
+// Add this section to listen to the StudentNumberUpdated event
+const studentNumberUpdatedEvent = contract.events.StudentNumberUpdated();
+
+studentNumberUpdatedEvent.on('data', (event) => {
+  console.log('StudentNumberUpdated event received:', event.returnValues);
+});
+
+studentNumberUpdatedEvent.on('error', (error) => {
+  console.error('Error in event:', error);
+});
+
+// Rest of your existing code...
+
 const gas = 200000;
 const gasPrice = web3.utils.toWei('10', 'gwei');
 const amountToSend = web3.utils.toWei('0.0054', 'ether');
 
 // Create a transaction to write the student number to the contract
-const studentNumber = 721;
+const studentNumber = 4838;
 const setStudentNumberTransaction = contract.methods.setStudentNumber(studentNumber);
 const setStudentNumberEncodedTransaction = setStudentNumberTransaction.encodeABI();
 
@@ -41,15 +55,6 @@ web3.eth.accounts.signTransaction(transactionObject, Buffer.from(privateKey, 'he
   .then((signedTransaction) => {
     // Send the signed transaction to the Ethereum network
     return web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
-  })
-  .then((receipt) => {
-    console.log('Transaction receipt:', receipt);
-
-    // Now, read the student number value from the contract
-    return contract.methods.getStudentNumber().call();
-  })
-  .then((result) => {
-    console.log('Student number after transaction:', result);
   })
   .catch((error) => {
     console.error('Error:', error);
