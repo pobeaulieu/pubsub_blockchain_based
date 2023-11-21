@@ -113,7 +113,7 @@ async function runClient() {
   // await printPubSubState() 
 
   console.log("------------------------------MENU------------------------------------");
-  rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n 6: Listen to network \n Enter choice: ', async (choice) => {
+  rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n Enter choice: \n', async (choice) => {
     try {
       switch (choice) {
         case '1':
@@ -141,5 +141,41 @@ async function runClient() {
     }
   });
 }
+
+const brokerPort = process.argv.slice(2)[1];
+
+if (!brokerPort) {
+  console.error('Error: Port to start Broker not provided.');
+  process.exit(1);
+}
+
+const WebSocket = require('ws');
+
+const ws = new WebSocket(`ws://localhost:${brokerPort}`);
+
+ws.on('open', () => {
+  console.log('Connected to Broker WebSocket server');
+
+  // Send a message to the server once the connection is open
+  ws.send(privateKey);
+});
+
+ws.on('message', (data) => {
+  console.log(`Received message: ${data}`);
+});
+
+ws.on('close', () => {
+  console.log('Connection closed');
+});
+
+ws.on('error', (error) => {
+  console.error(`WebSocket error: ${error.message}`);
+});
+
+
+
+
+
+
 
 runClient();

@@ -5,7 +5,9 @@
     "dotenv": "^16.3.1",
     "truffle": "^5.11.5",
     "truffle-contract": "^4.0.31",
-    "web3": "^4.2.2"
+    "web3": "^4.2.2",
+    "websocket": "^1.0.34",
+    "ws": "^8.14.2"
   },
   "name": "pubsub_blockchain_based",
   "description": "## System Architecture ![alt text](image.png)",
