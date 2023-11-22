@@ -154,8 +154,8 @@ const WebSocket = require('ws');
 const ws = new WebSocket(`ws://localhost:${brokerPort}`);
 
 ws.on('open', () => {
-  // Send a message to the server once the connection is open
-  ws.send(privateKey);
+  const subscriberAddress = web3.eth.accounts.privateKeyToAccount(Buffer.from(privateKey, 'hex')).address;
+  ws.send(subscriberAddress);
 });
 
 var clientRunning = false
