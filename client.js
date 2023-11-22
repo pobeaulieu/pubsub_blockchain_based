@@ -103,14 +103,14 @@ async function unsubscribeFromTopic() {
 
 async function printPubSubState(){
   const allTopics = await contract.methods.printAllTopics().call();
-  console.log("--------------------------PUBSUB STATE--------------------------------");
-  console.log(`${allTopics}`);
+  console.log("\x1b[33m%s\x1b[0m","--------------------------PUBSUB STATE--------------------------------");
+  console.log("\x1b[33m%s\x1b[0m",`${allTopics}`);
 
 }
 
 async function runClient() {
   // For debugging. Comment for a cleaner console.
-  // await printPubSubState()
+  await printPubSubState()
 
   console.log("------------------------------MENU------------------------------------");
 
