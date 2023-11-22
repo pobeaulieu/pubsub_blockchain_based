@@ -112,13 +112,11 @@ async function runClient() {
   // For debugging. Comment for a cleaner console.
   // await printPubSubState()
 
-  // Clear the console before printing the menu
-
   console.log("------------------------------MENU------------------------------------");
 
   try {
     const choice = await new Promise((resolve) => {
-      rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n Enter choice: \n', (answer) => {
+      rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n Enter choice: ', (answer) => {
         resolve(answer);
       });
     });
@@ -163,10 +161,8 @@ ws.on('open', () => {
   ws.send(subscriberAddress);
 });
 
-var clientRunning = false
-
 ws.on('message', (data) => {
-  console.log(`${data}`);
+  console.log("\x1b[36m%s\x1b[0m", `\n${data}`);
   const dataString = String(data); 
 
   if (dataString.startsWith("CONNECTED TO BROKER")) {

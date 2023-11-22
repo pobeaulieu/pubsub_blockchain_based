@@ -58,6 +58,7 @@ const contract = new web3.eth.Contract(contractAbi, contractAddress);
 const messageReceivedEvent = contract.events.MessageReceived();
 
 messageReceivedEvent.on('data', (event) => {
+    const topic = event.returnValues[0];
     const message = event.returnValues[1];
     const ethAddress = event.returnValues[2];
 
@@ -66,7 +67,7 @@ messageReceivedEvent.on('data', (event) => {
 
    if (ws) {
         console.log(`Sending message "${message}" to address ${ethAddress}`);
-        ws.send(`Message received: ${message}`);
+        ws.send(`Topic: ${topic}, Message: ${message}`);
     } else {
         console.log(`No WebSocket connection found for address ${ethAddress}`);
     }
