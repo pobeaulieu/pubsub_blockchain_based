@@ -1,50 +1,54 @@
 const { Web3 } = require('web3');
 const fs = require('fs');
-require('dotenv').config();
-
-// ############################ Setup Server ############################
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+require('dotenv').config();
 
-const port = process.argv.slice(2)[0]
+const port = process.argv.slice(2)[0];
 
 if (!port) {
-  console.error('Error: Port to start Broker not provided.');
-  process.exit(1);
+    console.error('Error: Port to start Broker not provided.');
+    process.exit(1);
 }
 
 const app = express();
-
-//initialize a simple http server
 const server = http.createServer(app);
-
-//initialize the WebSocket server instance
 const wss = new WebSocket.Server({ server });
 
-wss.on('connection', (ws) => {
-  ws.on('message', (ethAddressMessage) => {
-    const clientIpAddress = ws._socket.remoteAddress;
-    const port = ws._socket._peername.port;
-    console.log(`OPEN CONNECTION. Client INFO: ip=${clientIpAddress}, port=${port}, address=${ethAddressMessage}`);
-    ws.send(`CONNECTED TO BROKER. Client INFO: {ip=${clientIpAddress}, port=${port}, address=${ethAddressMessage}}`);
-  });
+// Map to store WebSocket connections based on Ethereum addresses
+const ethAddressToWsMap = new Map();
 
-  ws.on('close', () => {
-    const clientIpAddress = ws._socket.remoteAddress;
-    const port = ws._socket._peername.port;
-    console.log(`CLOSED CONNECTION. Client INFO: ip=${clientIpAddress}, port=${port}`);
-  });
+wss.on('connection', (ws) => {
+    ws.on('message', (ethAddressMessage) => {
+        const clientIpAddress = ws._socket.remoteAddress;
+        const port = ws._socket._peername.port;
+        console.log(`OPEN CONNECTION. Client INFO: ip=${clientIpAddress}, port=${port}, address=${ethAddressMessage}`);
+
+        // Store the WebSocket connection in the map using Ethereum address as the key
+        ethAddressToWsMap.set(ethAddressMessage.toString(), ws);
+
+        ws.send(`CONNECTED TO BROKER. Client INFO: {ip=${clientIpAddress}, port=${port}, address=${ethAddressMessage}}`);
+    });
+
+    ws.on('close', () => {
+        const clientIpAddress = ws._socket.remoteAddress;
+        const port = ws._socket._peername.port;
+        console.log(`CLOSED CONNECTION. Client INFO: ip=${clientIpAddress}, port=${port}`);
+
+        // Remove the WebSocket connection from the map when it is closed
+        ethAddressToWsMap.forEach((value, key) => {
+            if (value === ws) {
+                ethAddressToWsMap.delete(key);
+            }
+        });
+    });
 });
 
-
-//start our server
 server.listen(port, () => {
     console.log(`Broker started on port ${server.address().port}`);
 });
 
-
-// ############################ Listen to Blockchain events ############################
 const websocketUrl = process.env.WEBSOCKET_URL;
 const web3 = new Web3(websocketUrl);
 const contractJson = JSON.parse(fs.readFileSync('build/contracts/PubSubContract.json', 'utf8'));
@@ -54,9 +58,20 @@ const contract = new web3.eth.Contract(contractAbi, contractAddress);
 const messageReceivedEvent = contract.events.MessageReceived();
 
 messageReceivedEvent.on('data', (event) => {
-  console.log(`Sending message ${event.returnValues[1]} to address ${event.returnValues[2]}`);
+    const message = event.returnValues[1];
+    const ethAddress = event.returnValues[2];
+
+    // Check if there is a WebSocket connection associated with the Ethereum address
+    const ws = ethAddressToWsMap.get(ethAddress);
+
+   if (ws) {
+        console.log(`Sending message "${message}" to address ${ethAddress}`);
+        ws.send(`Message received: ${message}`);
+    } else {
+        console.log(`No WebSocket connection found for address ${ethAddress}`);
+    }
 });
 
 messageReceivedEvent.on('error', (error) => {
-  console.error('Error in event:', error);
+    console.error('Error in event:', error);
 });

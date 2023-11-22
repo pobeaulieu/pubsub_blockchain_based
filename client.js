@@ -109,37 +109,42 @@ async function printPubSubState(){
 }
 
 async function runClient() {
-  // For debugging. Comment for a cleaner console. 
-  // await printPubSubState() 
+  // For debugging. Comment for a cleaner console.
+  // await printPubSubState()
+
+  // Clear the console before printing the menu
 
   console.log("------------------------------MENU------------------------------------");
-  rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n Enter choice: \n', async (choice) => {
-    try {
-      switch (choice) {
-        case '1':
-          await advertiseTopic();
-          break;
-        case '2':
-          await unadvertiseTopic();
-          break;
-        case '3':
-          await publishMessage();
-          break;
-        case '4':
-          await subscribeToTopic();
-          break;
-        case '5':
-          await unsubscribeFromTopic();
-          break;
-        default:
-          console.log('Invalid choice.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      // Restart the process by calling the function recursively
-      runClient();
+
+  try {
+    const choice = await new Promise((resolve) => {
+      rl.question(' 1: advertise \n 2: unadvertise \n 3: publish \n 4: subscribe \n 5: unsubscribe \n Enter choice: \n', (answer) => {
+        resolve(answer);
+      });
+    });
+
+    switch (choice) {
+      case '1':
+        await advertiseTopic();
+        break;
+      case '2':
+        await unadvertiseTopic();
+        break;
+      case '3':
+        await publishMessage();
+        break;
+      case '4':
+        await subscribeToTopic();
+        break;
+      case '5':
+        await unsubscribeFromTopic();
+        break;
+      default:
+        console.log('Invalid choice.');
     }
-  });
+  } catch (error) {
+    console.error('Error:', error);
+  } 
 }
 
 const brokerPort = process.argv.slice(2)[1];
@@ -162,8 +167,10 @@ var clientRunning = false
 
 ws.on('message', (data) => {
   console.log(`${data}`);
-  if (!clientRunning){
-    runClient();
+  const dataString = String(data); 
+
+  if (dataString.startsWith("CONNECTED TO BROKER")) {
+    runClient()
   }
 });
 
