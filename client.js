@@ -154,14 +154,17 @@ const WebSocket = require('ws');
 const ws = new WebSocket(`ws://localhost:${brokerPort}`);
 
 ws.on('open', () => {
-  console.log('Connected to Broker WebSocket server');
-
   // Send a message to the server once the connection is open
   ws.send(privateKey);
 });
 
+var clientRunning = false
+
 ws.on('message', (data) => {
-  console.log(`Received message: ${data}`);
+  console.log(`${data}`);
+  if (!clientRunning){
+    runClient();
+  }
 });
 
 ws.on('close', () => {
@@ -178,4 +181,4 @@ ws.on('error', (error) => {
 
 
 
-runClient();
+

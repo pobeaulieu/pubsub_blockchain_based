@@ -23,18 +23,20 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
-  const clientIpAddress = ws._socket.remoteAddress;
-  const info = ws._socket._peername.port;
-
-  // connection is up, let's add a simple event
-  ws.on('message', (message) => {
-      // log the received message and send it back to the client
-      console.log(`Received from IP: ${clientIpAddress} PORT ${info} Message-> ${message}`);
+  ws.on('message', (ethAddressMessage) => {
+    const clientIpAddress = ws._socket.remoteAddress;
+    const port = ws._socket._peername.port;
+    console.log(`OPEN CONNECTION. Client INFO: ip=${clientIpAddress}, port=${port}, address=${ethAddressMessage}`);
+    ws.send(`CONNECTED TO BROKER. Client INFO: {ip=${clientIpAddress}, port=${port}, address=${ethAddressMessage}}`);
   });
 
-  // send immediately feedback to the incoming connection    
-  ws.send(`Your IP address is ${clientIpAddress} PORT ${info}`);
+  ws.on('close', () => {
+    const clientIpAddress = ws._socket.remoteAddress;
+    const port = ws._socket._peername.port;
+    console.log(`CLOSED CONNECTION. Client INFO: ip=${clientIpAddress}, port=${port}`);
+  });
 });
+
 
 //start our server
 server.listen(port, () => {
