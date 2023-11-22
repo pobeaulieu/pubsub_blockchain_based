@@ -37,7 +37,7 @@ const gasPrice = web3.utils.toWei('10', 'gwei');
 const amountToSend = web3.utils.toWei('0.0054', 'ether');
 
 // Create a transaction to write the student number to the contract
-const studentNumber = 4838;
+const studentNumber = 123;
 const setStudentNumberTransaction = contract.methods.setStudentNumber(studentNumber);
 const setStudentNumberEncodedTransaction = setStudentNumberTransaction.encodeABI();
 

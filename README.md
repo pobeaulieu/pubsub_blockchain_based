@@ -1,5 +1,7 @@
 
 # Publish/Subscribe on the Blockchain
+## Demo
+https://www.youtube.com/watch?v=Kr6E1B-p4Ok&ab_channel=Pier-OlivierBeaulieu 
 ## Getting Started
 ### 1. Create a network on Ganache and start it
 ```
@@ -41,6 +43,9 @@ node client.js {PRIVATE_KEY} {BROKER_PORT}
 node client.js 83adef4a25423d0bc3ef81ccd38a855dd923f1db978511c54d62c30ab1b8a9be 65222
 node client.js b0c9b55816f2ddbe4582253a6ab7fa3987569a350ed68e62f0aeaa93dfa83bc7 65222
 node client.js f2466bf4cbb5c03852765c0a31bd2792e6725d5f538bd1d51edbdee47250b2d7 65222
+
+
+node client.js 21f779cd9811005ecc75d5caf2399628b7f4a19485db8c8e10f148dbc33d3be1 65222
 ``` 
 
 ## System Architecture
