@@ -30,8 +30,6 @@ studentNumberUpdatedEvent.on('error', (error) => {
   console.error('Error in event:', error);
 });
 
-// Rest of your existing code...
-
 const gas = 200000;
 const gasPrice = web3.utils.toWei('10', 'gwei');
 const amountToSend = web3.utils.toWei('0.0054', 'ether');
